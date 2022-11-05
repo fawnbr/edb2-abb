@@ -10,6 +10,6 @@ public class App {
         ArvoreBinariadeBusca abb = new ArvoreBinariadeBusca(valores);
         abb.imprimir(1);
         System.out.println();
-        System.out.println(abb.media(41));
+        //System.out.println(abb.media(41));
     }
 }
