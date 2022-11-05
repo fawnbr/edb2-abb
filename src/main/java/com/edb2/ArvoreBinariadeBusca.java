@@ -1,5 +1,8 @@
 package com.edb2;
 
+import java.util.List;
+import java.util.Vector;
+
 /**
  *  Assim como uma arvore generaliza uma lista encadeada, uma arvore binaria de busca generaliza uma
  * lista ordenada. Uma arvore binaria de busca permite inserção de elementos não previamente inseridos,
@@ -17,9 +20,11 @@ package com.edb2;
  *  |+++++++++++++++++++++++++++++++++++++++|
  *  Onde:
  *      fEsq = enderreço do filho da esquerda
- *      cE   = booleano que indica se o filho da esquerda é uma costura ou não (se for de costura, o endereço do filho da esquerda é o endereço do antecessor)
+ *      cE   = booleano que indica se o filho da esquerda é uma costura ou não 
+ *             (se for de costura, o endereço do filho da esquerda é o endereço do antecessor)
  *      fDir = endereço do filho da direita
- *      cD   = booleano que indica se o filho da direita é uma costura ou não (se for de costura, o endereço do filho da direita é o endereço do sucessor)
+ *      cD   = booleano que indica se o filho da direita é uma costura ou não 
+ *             (se for de costura, o endereço do filho da direita é o endereço do sucessor)
  *      PAI  = endereço do pai do nó
  *      VALOR= valor do nó (inteiro)
  *
@@ -35,14 +40,14 @@ package com.edb2;
  *             |                                        |            ^   ^          |                                    |
  *             |                  +---------------------|            |   |          +-------------------+                |
  *             |                  |   +------------------------------+   +------------------------+     |                |
- *             |                  v   |                                                           |     V                |
+ *             |                  V   |                                                           |     V                |
  *             |  |+++++++++++++++++++++++++++++++++++++++|                   |+++++++++++++++++++++++++++++++++++++++|  |
  *             |  |END:_1x02______|_______|_______________|                   |END:_1x03______|__PAI__|_______________|  |  
  *             |  |           | 1 | VALOR | 1 |   1x01    |                   |    1x01   | 1 | VALOR | 1 |           |  |
  *             |  |+++++++++++++++++++++++++++++++++++++++|                   |+++++++++++++++++++++++++++++++++++++++|  |
  *             |        |                           |                                |                          |        |
  *             +--------|---------------------------+                                +--------------------------|--------+
- *                      v                                                                                       v
+ *                      V                                                                                       V
  *                     NULO                                                                                    NULO
  *  @author Lucas Nogueira (@fawnbr) e Ianco Oliveira (@ianco-so)
  *  @since 04/11/2022
@@ -52,13 +57,85 @@ public class ArvoreBinariadeBusca {
     private Integer tamanho;
     private Integer altura;
 
-    public ArvoreBinariadeBusca() {
+    public ArvoreBinariadeBusca(Integer valores[]) {
         this.raiz = null;
         this.tamanho = 0;
         this.altura = 0;
+        valores = mergeSort(valores);
+        System.out.println(valores);
+        criarArvore(valores, 0, valores.length-1);
     }
-    // public ArvoreBinariadeBusca() {
-    // }
+    /**
+     * Cria uma arvore binaria de busca com os valores da lista já ordenados
+     * Insere os valores da lista de forma recursiva
+     * @param valores
+     * @param i
+     * @param j
+     */
+    private void criarArvore(Integer valores[], int i, int j) {
+        if (i <= j) {
+            int meio = (i + j) / 2;
+            inserir(valores[meio]);
+            criarArvore(valores, i, meio - 1);
+            criarArvore(valores, meio + 1, j);
+        }
+    }
+    /**
+     * Ordena um array de Inteiros usando o algoritmo de ordenação MergeSort
+     * @param um array de inteiros
+     * @return um array de inteiros ordenado
+     */
+    private static Integer[] mergeSort(Integer[] valores) {
+        if (valores.length <= 1) {
+            return valores;
+        }
+        int meio = valores.length / 2;
+        Integer[] esquerda = new Integer[meio];
+        Integer[] direita = new Integer[valores.length - meio];
+        for (int i = 0; i < meio; i++) {
+            esquerda[i] = valores[i];
+        }
+        for (int i = meio; i < valores.length; i++) {
+            direita[i - meio] = valores[i];
+        }
+        esquerda = mergeSort(esquerda);
+        direita = mergeSort(direita);
+        Integer[] resultado = merge(esquerda, direita);
+        return resultado;
+    }
+    /**
+     * Mescla dois arrays de inteiros em um só
+     * @param esquerda
+     * @param direita
+     * @return um array de inteiros ordenado
+     */
+    private static Integer[] merge(Integer[] esquerda, Integer[] direita) {
+        Integer[] resultado = new Integer[esquerda.length + direita.length];
+        int i = 0;
+        int j = 0;
+        int k = 0;
+        while (i < esquerda.length && j < direita.length) {
+            if (esquerda[i] <= direita[j]) {
+                resultado[k] = esquerda[i];
+                i++;
+            } else {
+                resultado[k] = direita[j];
+                j++;
+            }
+            k++;
+        }
+        while (i < esquerda.length) {
+            resultado[k] = esquerda[i];
+            i++;
+            k++;
+        }
+        while (j < direita.length) {
+            resultado[k] = direita[j];
+            j++;
+            k++;
+        }
+        return resultado;
+    }
     /**
      * Retorna o tamanho da arvore, ou seja, a quantidade de nós.
      * @return tamanho da arvore
@@ -67,11 +144,18 @@ public class ArvoreBinariadeBusca {
         return this.tamanho;
     }
     /**
-     * Retorna a altura da arvore
-     * @return altura da arvor
+     * Calcula recursivamente a altura da arvore a partir da raiz
+     * @return altura da arvore
      */
-    public Integer getAltura() { //TODO: implementar
+    public Integer getAltura() {
+        this.altura = getAltura(this.raiz);
         return this.altura;
+    }
+    private static Integer getAltura(No no) {
+        if (no == null) {
+            return -1;
+        }
+        return 1 + Math.max(getAltura(no.isCosturaEsquerda()? null : no.getFilhoEsquerda()), getAltura(no.isCosturaDireita()? null : no.getFilhoDireita()));
     }
     /**
      * Verifica se a arvore está vazia
@@ -235,19 +319,45 @@ public class ArvoreBinariadeBusca {
             this.tamanho--;
             return true;
         } else { //Tem filhos a esquerda e a direita
-            //O nó a ser removido é substituido pelo seu sucessor, que será necessariamente uma folha.
-            //Então, após a substituição, o nó na posição do sucessor pode ser removido.
+            //O nó a ser removido é substituido pelo seu sucessor.
+            //Como, ou o sucessor é folha ou tem apenas um filho, o processo de remoção é o mesmo.
             No sucessor = sucessor(no);
             no.setValor(sucessor.getValor());
-            if (sucessor.getPai().getFilhoEsquerda() == sucessor) {
-                sucessor.getPai().setCosturaEsquerda(true);
-                sucessor.getPai().setFilhoEsquerda(sucessor.getFilhoEsquerda());
+            if (sucessor.isFolha()) {
+                if (sucessor.getPai() == null) { //Apenas o nó raiz tem pai nulo
+                    this.raiz = null;
+                } else if (sucessor.getPai().getFilhoEsquerda() == sucessor) { //É filho da esquerda do pai
+                    sucessor.getPai().setCosturaEsquerda(true);
+                    //O antecessor do pai passa a ser o antecessor do nó a ser removido
+                    sucessor.getPai().setFilhoEsquerda(sucessor.getFilhoEsquerda());
+                    
+                } else {
+                    sucessor.getPai().setCosturaDireita(true);
+                    //O sucessor do pai passa a ser o sucessor do nó a ser removido
+                    sucessor.getPai().setFilhoDireita(sucessor.getFilhoDireita());
+                }
+                this.tamanho--;
+                return true;
             } else {
-                sucessor.getPai().setCosturaDireita(true);
-                sucessor.getPai().setFilhoDireita(sucessor.getFilhoDireita());
+                if (sucessor.getFilhoDireita().isCosturaEsquerda()) { 
+                    //Se o filho tem nó de costura na esquerda este aponta para o antecessor, nesse caso o pai.
+                    //Como o pai será removido, então o antecessor do filho passa a ser o antecessor do pai.
+                    //E ele tem nó de costura na esquerda.
+                    sucessor.getFilhoDireita().setFilhoEsquerda(antecessor(sucessor));
+                }
+                if (sucessor.getPai() == null) {
+                    this.raiz = sucessor.getFilhoDireita();
+                    this.raiz.setPai(null);
+                } else if (sucessor.getPai().getFilhoEsquerda() == sucessor) { //Se o nó é  filho da esquerda do pai
+                    sucessor.getPai().setFilhoEsquerda(sucessor.getFilhoDireita());
+                    sucessor.getFilhoDireita().setPai(sucessor.getPai());
+                } else {
+                    sucessor.getPai().setFilhoDireita(sucessor.getFilhoDireita());
+                    sucessor.getFilhoDireita().setPai(sucessor.getPai());
+                }
+                this.tamanho--;
+                return true;
             }
-            this.tamanho--;
-            return true;
         }
     }
     /**
@@ -282,4 +392,167 @@ public class ArvoreBinariadeBusca {
             return antecessor;
         }
     }
+    /**
+     * Imprime a arovre inteira em pré-ordem no formato desejado. Exemplo:
+     *  para a lista a = 32, 13, 5, 41, 20, 36, 60.
+     * A árvore terá a seguinte forma hierárquica:
+     *              	+--------32--------+
+     *               	|                  |
+	 *                  V                  V
+     *             +----13----+       +----41----+
+     *             |          |       |          |
+     *             V  	      V       V	         V
+     *             5          20      36         60     
+     * A impressão 1 será da seguinte forma: (Diagrama de Barras)
+     *  32------------------
+     *      13-------------- 
+     *          5-----------
+     *          20----------
+     *      41--------------
+     *          36----------
+     *          60----------
+     * A impressão 2 será da seguinte forma: (Aninhamento)
+     * (32 (13 (5) (20)) (41 (60)))
+     * @param s Formato de impressão da árvore. 1 para diagrama de barras e 2 para aninhamento.
+     */
+    public void imprimir(int s) {
+        if (s == 1) {
+            imprimirDiagramaBarras(this.raiz, 0);
+        } else if (s == 2) {
+            imprimirAninhamento(this.raiz);
+        }
+    }
+    private void imprimirDiagramaBarras(No no, int n) {
+        //Percorrer a árvore em pré-ordem e imprimir os nós.
+        if (no != null) { 
+            for (int i = 0; i < n; i++) {
+                System.out.print("    ");
+            }
+            System.out.println(no.getValor() + "------------------");
+            imprimirDiagramaBarras(no.isCosturaEsquerda()? null : no.getFilhoEsquerda(), n + 1);
+            imprimirDiagramaBarras(no.isCosturaDireita()? null : no.getFilhoDireita(), n + 1);
+        }
+    }
+    private void imprimirAninhamento(No no) {
+        if (no != null) {
+            System.out.print("(" + no.getValor());
+            if (!no.isFolha()) System.out.print(" ");
+            imprimirAninhamento(no.isCosturaEsquerda()? null : no.getFilhoEsquerda());
+            imprimirAninhamento(no.isCosturaDireita()? null : no.getFilhoDireita());
+            System.out.print(")");
+        }
+    }
+    /**
+     * Retorna uma string contendo os valores da árvore em pré-ordem.
+     * @return uma string contendo os valores da árvore em pré-ordem.
+     */
+    String preOrdem() {
+        return preOrdem(this.raiz);
+    }
+    private String preOrdem(No no) {
+        if (no == null) {
+            return "";
+        }
+        return  no.getValor() +
+                " " + preOrdem(no.isCosturaEsquerda()? null : no.getFilhoEsquerda()) +
+                preOrdem(no.isCosturaDireita()? null : no.getFilhoDireita());
+    }
+    /**
+     * Retorna uma string contendo os valores da árvore em ordem simétrica.
+     * @return uma string contendo os valores da árvore em ordem simétrica.
+     */
+    String emOrdem() {
+        return emOrdem(this.raiz);
+    }
+    
+    private String emOrdem(No no) {
+        if (no == null) {
+            return "";
+        }
+        return  emOrdem(no.isCosturaEsquerda()? null : no.getFilhoEsquerda()) +
+                no.getValor() +
+                " " + emOrdem(no.isCosturaDireita()? null : no.getFilhoDireita());
+    }
+    /**
+     * Dado um valor x, retorna a posição em que ele se encontra na árvore.
+     * A posição refere-se a ordem simétrica da árvore.
+     * Se o valor não estiver na árvore, retorna -1.
+     * @param x o valor a ser pesquisado.
+     * @return a posição em que o valor x se encontra na árvore.
+     */
+    // public Integer posicao(Integer x) {
+    //     return posicao(this.raiz, x, 0);
+    // }
+    // private Integer posicao(No no, Integer x, int i) {
+    //     if (no == null) {
+    //         return 0;
+    //     }
+    //     Integer posicao = posicao(no.isCosturaEsquerda()? null : no.getFilhoEsquerda(), x, i);
+
+
+    // }
+    /**
+     * Dado o nó da árvore, percorre a sub-árvore da qual esse nó é raiz e retorna a média dos valores dos nós.
+     * @return a média dos valores dos nós de uma sub-árvore.
+     */
+    // Double media(Integer valor) {
+    //     No no = this.buscar(valor);
+    //     if (no == null) {
+    //         return 0.0;
+    //     } else {
+    //         return media(no, 0, 0);
+    //     }
+    // }
+    // private Double media(No no, int sum, int qNos) {
+    //     if (no == null) {
+    //         return 0.0;
+    //     } else {
+    //         sum += no.getValor();
+    //         qNos++;
+    //         return  (sum / qNos) +
+    //                 media(no.isCosturaEsquerda()? null : no.getFilhoEsquerda(), sum, qNos) +
+    //                 media(no.isCosturaDireita()? null : no.getFilhoDireita(), sum, qNos);
+    //     }
+    // }
+
+    // public Boolean ehCompleta () {
+    //     return ehCompleta(this.raiz);
+    // }
+    // private Boolean ehCompleta(No no) {
+    //     if (no == null) {
+    //         return true;
+    //     } else {
+    //         if (no.isFolha()) {
+    //             return true;
+    //         } else if (no.isCosturaEsquerda() && no.isCosturaDireita()) {
+    //             return true;
+    //         } else if (no.isCosturaEsquerda() && !no.isCosturaDireita()) {
+    //             return false;
+    //         } else if (!no.isCosturaEsquerda() && no.isCosturaDireita()) {
+    //             return false;
+    //         } else {
+    //             return ehCompleta(no.getFilhoEsquerda()) && ehCompleta(no.getFilhoDireita());
+    //         }
+    //     }
+    // }
+    // public Boolean ehCheia () {
+    //     return ehCheia(this.raiz);
+    // }
+    // private Boolean ehCheia(No no) {
+    //     if (no == null) {
+    //         return true;
+    //     } else {
+    //         if (no.isFolha()) {
+    //             return true;
+    //         } else if (no.isCosturaEsquerda() && no.isCosturaDireita()) {
+    //             return true;
+    //         } else if (no.isCosturaEsquerda() && !no.isCosturaDireita()) {
+    //             return false;
+    //         } else if (!no.isCosturaEsquerda() && no.isCosturaDireita()) {
+    //             return false;
+    //         } else {
+    //             return ehCheia(no.getFilhoEsquerda()) && ehCheia(no.getFilhoDireita());
+    //         }
+    //     }
+    // }
 }
