@@ -1,8 +1,5 @@
 package com.edb2;
 
-import java.util.List;
-import java.util.Vector;
-
 public class App {
     public static void main(String[] args) {
         Integer valores[] = {32, 13, 5, 41, 20, 36, 60};
@@ -10,6 +7,8 @@ public class App {
         ArvoreBinariadeBusca abb = new ArvoreBinariadeBusca(valores);
         abb.imprimir(1);
         System.out.println();
-        //System.out.println(abb.media(41));
+        System.out.println(abb.emOrdem());
+        System.out.println(abb.ehCompleta());
+        System.out.println(abb.ehCheia());
     }
 }
