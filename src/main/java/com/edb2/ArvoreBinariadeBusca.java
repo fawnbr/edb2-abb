@@ -1,8 +1,5 @@
 package com.edb2;
 
-import java.util.List;
-import java.util.Vector;
-
 /**
  *  Assim como uma arvore generaliza uma lista encadeada, uma arvore binaria de busca generaliza uma
  * lista ordenada. Uma arvore binaria de busca permite inserção de elementos não previamente inseridos,
@@ -153,7 +150,7 @@ public class ArvoreBinariadeBusca {
     }
     private static Integer getAltura(No no) {
         if (no == null) {
-            return -1;
+            return 0;
         }
         return 1 + Math.max(getAltura(no.isCosturaEsquerda()? null : no.getFilhoEsquerda()), getAltura(no.isCosturaDireita()? null : no.getFilhoDireita()));
     }
@@ -446,7 +443,7 @@ public class ArvoreBinariadeBusca {
      * Retorna uma string contendo os valores da árvore em pré-ordem.
      * @return uma string contendo os valores da árvore em pré-ordem.
      */
-    String preOrdem() {
+    public String preOrdem() {
         return preOrdem(this.raiz);
     }
     private String preOrdem(No no) {
@@ -458,101 +455,160 @@ public class ArvoreBinariadeBusca {
                 preOrdem(no.isCosturaDireita()? null : no.getFilhoDireita());
     }
     /**
+     * Retorna o Nó de menor valor da árvore.
+     * @return o Nó de menor valor da árvore.
+     */
+    public No min() {
+        return min(this.raiz);
+    }
+    private No min(No no) {
+        if (no == null) {
+            return null;
+        }
+        while (!no.isCosturaEsquerda()) {
+            no = no.getFilhoEsquerda();
+        }
+        return no;
+    }
+    /**
+     * Retorna o Nó de maior valor da árvore.
+     * @return o Nó de maior valor da árvore.
+     */
+    public No max() {
+        return max(this.raiz);
+    }
+    private No max(No no) {
+        if (no == null) {
+            return null;
+        }
+        while (!no.isCosturaDireita()) {
+            no = no.getFilhoDireita();
+        }
+        return no;
+    }
+    /**
      * Retorna uma string contendo os valores da árvore em ordem simétrica.
      * @return uma string contendo os valores da árvore em ordem simétrica.
      */
-    String emOrdem() {
+    public String emOrdem() {
         return emOrdem(this.raiz);
     }
-    
     private String emOrdem(No no) {
-        if (no == null) {
-            return "";
+        No min = this.min();
+        No max = this.max();
+        String s = "";
+        while (!min.equals(max)) {
+            s += min.getValor() + " ";
+            min = sucessor(min);
         }
-        return  emOrdem(no.isCosturaEsquerda()? null : no.getFilhoEsquerda()) +
-                no.getValor() +
-                " " + emOrdem(no.isCosturaDireita()? null : no.getFilhoDireita());
+        s += max.getValor();
+        return s;
     }
     /**
      * Dado um valor x, retorna a posição em que ele se encontra na árvore.
      * A posição refere-se a ordem simétrica da árvore.
      * Se o valor não estiver na árvore, retorna -1.
+     * O algoritmo é baseado no percurso em ordem simétrica, porém, ao invés de
+     * imprimir o valor, incrementa uma variável que representa a posição.
+     * 
      * @param x o valor a ser pesquisado.
      * @return a posição em que o valor x se encontra na árvore.
      */
-    // public Integer posicao(Integer x) {
-    //     return posicao(this.raiz, x, 0);
-    // }
-    // private Integer posicao(No no, Integer x, int i) {
-    //     if (no == null) {
-    //         return 0;
-    //     }
-    //     Integer posicao = posicao(no.isCosturaEsquerda()? null : no.getFilhoEsquerda(), x, i);
-
-
-    // }
+    public Integer posicao(Integer x) {
+        No noX = this.buscar(x);
+        if (noX == null) {
+            return -1;
+        }
+        No min = this.min();
+        int pos = 1;
+        while (!min.equals(noX)) {
+            pos++;
+            min = sucessor(min);
+        }
+        return pos;
+    }
+    /**
+     * Dado um valor n, retorna o valor que está na posição n da árvore em ordem simétrica.
+     * Se a posição estiver fora dos limites da árvore, retorna null.
+     * @param n a posição a ser pesquisada.
+     * @return o valor que está na posição n da árvore em ordem simétrica.
+     */
+    public Integer enesimoElemento(Integer n) {
+        if (n < 1 || n > this.getTamanho()) {
+            return null;
+        }
+        No min = this.min();
+        int pos = 1;
+        while (pos < n) {
+            pos++;
+            min = sucessor(min);
+        }
+        if (pos == n) {
+            return min.getValor();
+        }
+        return null;
+    }
+    /**
+     * Retorna o valor da mediana da árvore.
+     * Perceba que a mediana é o valor que está na posição central (na ordem simétrica) da árvore.
+     * então, se o tamanho da árvore for par, a mediana é a média dos dois valores centrais.
+     * @return a mediana da árvore.
+     */
+    public Double mediana() {
+        if (this.getTamanho() == 0) {
+            return null;
+        }
+        if (this.getTamanho() % 2 == 0) {
+            return (this.enesimoElemento(this.getTamanho() / 2) + this.enesimoElemento(this.getTamanho() / 2 + 1)) / 2.0;
+        }
+        return this.enesimoElemento(this.getTamanho() / 2 + 1) / 1.0; //o /1.0 é só para converter o resultado para double
+    }
     /**
      * Dado o nó da árvore, percorre a sub-árvore da qual esse nó é raiz e retorna a média dos valores dos nós.
      * @return a média dos valores dos nós de uma sub-árvore.
      */
-    // Double media(Integer valor) {
-    //     No no = this.buscar(valor);
-    //     if (no == null) {
-    //         return 0.0;
-    //     } else {
-    //         return media(no, 0, 0);
-    //     }
-    // }
-    // private Double media(No no, int sum, int qNos) {
-    //     if (no == null) {
-    //         return 0.0;
-    //     } else {
-    //         sum += no.getValor();
-    //         qNos++;
-    //         return  (sum / qNos) +
-    //                 media(no.isCosturaEsquerda()? null : no.getFilhoEsquerda(), sum, qNos) +
-    //                 media(no.isCosturaDireita()? null : no.getFilhoDireita(), sum, qNos);
-    //     }
-    // }
-
-    // public Boolean ehCompleta () {
-    //     return ehCompleta(this.raiz);
-    // }
-    // private Boolean ehCompleta(No no) {
-    //     if (no == null) {
-    //         return true;
-    //     } else {
-    //         if (no.isFolha()) {
-    //             return true;
-    //         } else if (no.isCosturaEsquerda() && no.isCosturaDireita()) {
-    //             return true;
-    //         } else if (no.isCosturaEsquerda() && !no.isCosturaDireita()) {
-    //             return false;
-    //         } else if (!no.isCosturaEsquerda() && no.isCosturaDireita()) {
-    //             return false;
-    //         } else {
-    //             return ehCompleta(no.getFilhoEsquerda()) && ehCompleta(no.getFilhoDireita());
-    //         }
-    //     }
-    // }
-    // public Boolean ehCheia () {
-    //     return ehCheia(this.raiz);
-    // }
-    // private Boolean ehCheia(No no) {
-    //     if (no == null) {
-    //         return true;
-    //     } else {
-    //         if (no.isFolha()) {
-    //             return true;
-    //         } else if (no.isCosturaEsquerda() && no.isCosturaDireita()) {
-    //             return true;
-    //         } else if (no.isCosturaEsquerda() && !no.isCosturaDireita()) {
-    //             return false;
-    //         } else if (!no.isCosturaEsquerda() && no.isCosturaDireita()) {
-    //             return false;
-    //         } else {
-    //             return ehCheia(no.getFilhoEsquerda()) && ehCheia(no.getFilhoDireita());
-    //         }
-    //     }
-    // }
+    Double media(Integer valor) {
+        Integer cont = 0;
+        return media(buscar(valor), cont);
+    }
+    private Double media(No no, Integer cont) {
+        No min = min(no);
+        No max = max(no);
+        Double soma = 0.0;
+        while (!min.equals(max)) {
+            soma += min.getValor();
+            min = sucessor(min);
+            cont++;
+        }
+        soma += max.getValor();
+        cont++;
+        return soma / cont;
+    }
+    /**
+     * Verifica se a arvore é completa ou não.
+     * Como temos que a altura de uma árvore completa é log2(n), onde n é o número de nós, podemos verificar se a árvore é completa
+     * verificando se a altura da árvore é igual a log2(n).
+     * @return true se a árvore for completa, false caso contrário.
+     */
+    public Boolean ehCompleta () {
+        if (this.raiz == null) {
+            return true;
+        }
+        return this.getAltura() == 1 + Math.ceil(Math.log(this.getTamanho()));
+    }
+    /**
+     * Verifica se a árvore é cheia ou não.
+     * Uma árvore é cheia se todos os nós internos possuem dois filhos e todos os nós folhas estão no mesmo nível.
+     * Como sabemos a altura h da árvore, podemos verificar se a árvore é cheia verificando se o número de nós da 
+     * arvore é a soma da P.G. finita 2^0 + 2^1 + 2^2 + ... + 2^h.
+     * @return true se a árvore for cheia, false caso contrário.
+     */
+    public Boolean ehCheia () {
+        if (this.raiz == null) {
+            return true;
+        }
+        Integer somapg;
+        somapg = (int) ((Math.pow(2, this.getAltura()) - 1) / (2 - 1));
+        return this.getTamanho() == somapg;
+    }
 }
