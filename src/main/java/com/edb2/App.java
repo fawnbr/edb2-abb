@@ -8,7 +8,6 @@ import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) {
-        // = {32, 13, 5, 41, 20, 36, 60};
 
         // === LENDO VALORES
         List<Integer> lista = lerValores("src/main/java/com/edb2/arquivo1.txt");
@@ -28,21 +27,66 @@ public class App {
                 // Cheia, Completa, Mediana, PreOrdem
                 if(operacoes.length == 1) {
                     if(operacoes[0].equalsIgnoreCase("CHEIA")) {
-                        // TODO
+                        if(abb.ehCheia()) {
+                            System.out.println("A árvore é cheia");
+                        }
+                        else {
+                            System.out.println("A árvore não é cheia");
+                        }
                     }
-                    if(operacoes[0].equalsIgnoreCase("COMPLETA")) {
-                        // TODO
+                    else if(operacoes[0].equalsIgnoreCase("COMPLETA")) {
+                        if(abb.ehCompleta()) {
+                            System.out.println("A árvore é completa");
+                        }
+                        else {
+                            System.out.println("A árvore não é completa");
+                        }
                     }
-                    if(operacoes[0].equalsIgnoreCase("PREORDEM")) {
+                    else if(operacoes[0].equalsIgnoreCase("PREORDEM")) {
                         System.out.println(abb.preOrdem());
                     }
-                    if(operacoes[0].equalsIgnoreCase("MEDIANA")) {
-                        // TODO
+                    else if(operacoes[0].equalsIgnoreCase("MEDIANA")) {
+                        System.out.println(abb.mediana());
                     }
                 }
+                // Enesimo, Insira, Imprima, Remova, Posicao, Media, Buscar
                 else if(operacoes.length == 2){
-                    if(operacoes[0].equalsIgnoreCase("CHEIA")) {
-                        // TODO
+                    Integer valor = Integer.parseInt(operacoes[1]);
+                    if(operacoes[0].equalsIgnoreCase("ENESIMO")) {
+                        System.out.println(abb.enesimoElemento(valor));
+                    }
+                    else if(operacoes[0].equalsIgnoreCase("INSIRA")) {
+                        if(abb.inserir(valor)) {
+                            System.out.println(valor + " adicionado");
+                        }
+                        else {
+                            System.out.println(valor + " já está na árvore, não pode ser inserido");
+                        }
+                    }
+                    else if(operacoes[0].equalsIgnoreCase("IMPRIMA")) {
+                        abb.imprimir(valor);
+                    }
+                    else if(operacoes[0].equalsIgnoreCase("REMOVA")) {
+                        if(abb.remover(valor)) {
+                            System.out.println(valor + " removido");
+                        }
+                        else {
+                            System.out.println(valor + " não está na árvore, não pode ser removido");
+                        }
+                    }
+                    else if(operacoes[0].equalsIgnoreCase("POSICAO")) {
+                        System.out.println(abb.posicao(valor));
+                    }
+                    else if(operacoes[0].equalsIgnoreCase("MEDIA")) {
+                       System.out.println(abb.media(valor));
+                    }
+                    else if(operacoes[0].equalsIgnoreCase("BUSCAR")) {
+                        if(abb.buscar(valor) != null) {
+                            System.out.println("Chave encontrada");
+                        }
+                        else {
+                            System.out.println("Chave não encontrada");
+                        }
                     }
                 }
                 else {
@@ -52,12 +96,6 @@ public class App {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
-        abb.imprimir(1);
-        System.out.println();
-        System.out.println(abb.emOrdem());
-        System.out.println(abb.ehCompleta());
-        System.out.println(abb.ehCheia());
     }
 
     private static List<Integer> lerValores(String arquivo) {
