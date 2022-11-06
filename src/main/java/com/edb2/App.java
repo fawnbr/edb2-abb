@@ -55,7 +55,9 @@ public class App {
 
         abb.imprimir(1);
         System.out.println();
-        //System.out.println(abb.media(41));
+        System.out.println(abb.emOrdem());
+        System.out.println(abb.ehCompleta());
+        System.out.println(abb.ehCheia());
     }
 
     private static List<Integer> lerValores(String arquivo) {
