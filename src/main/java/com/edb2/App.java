@@ -65,6 +65,7 @@ public class App {
                     }
                     else if(operacoes[0].equalsIgnoreCase("IMPRIMA")) {
                         abb.imprimir(valor);
+                        System.out.println();
                     }
                     else if(operacoes[0].equalsIgnoreCase("REMOVA")) {
                         if(abb.remover(valor)) {
