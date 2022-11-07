@@ -481,17 +481,17 @@ public class ArvoreBinariadeBusca {
     /**
      * Retorna o valor da mediana da árvore.
      * Perceba que a mediana é o valor que está na posição central (na ordem simétrica) da árvore.
-     * então, se o tamanho da árvore for par, a mediana é a média dos dois valores centrais.
+     * então, se o tamanho da árvore for par, a mediana é o menor entre os dois valores
      * @return a mediana da árvore.
      */
-    public Double mediana() {
+    public Integer mediana() {
         if (this.getTamanho() == 0) {
             return null;
         }
         if (this.getTamanho() % 2 == 0) {
-            return (double) Math.min(this.enesimoElemento(this.getTamanho() / 2), this.enesimoElemento(this.getTamanho() / 2 + 1));
+            return this.enesimoElemento(this.getTamanho() / 2);
         }
-        return this.enesimoElemento(this.getTamanho() / 2 + 1) / 1.0; //o /1.0 é só para converter o resultado para double
+        return this.enesimoElemento(this.getTamanho() / 2 + 1);
     }
     /**
      * Dado o nó da árvore, percorre a sub-árvore da qual esse nó é raiz e retorna a média dos valores dos nós.
