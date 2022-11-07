@@ -44,3 +44,7 @@ Caso esteja utilizando outra IDE, consultar documentação da mesma, se necessá
 ## COLABORADORES
 
 Este trabalho foi realizado por [@ianco-so](https://github.com/ianco-so) e [@fawnbr](https://github.com/fawnbr) .
+
+## ATENÇÃO
+
+A solução de remoção de um nó está utilizando como decisão de implementação pegar o nó sucessor e não antecessor, como previsto na saída.
