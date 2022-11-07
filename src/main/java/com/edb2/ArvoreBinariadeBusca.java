@@ -8,7 +8,7 @@ package com.edb2;
  * filho esquerdo e direito. A costura é um ponteiro para o sucessor ou antecessor do nó no percurso em ordem simétrica.
  * Caso o nó não tenha sucessor ou antecessor, o ponteiro para o sucessor ou antecessor será nulo mas o nó será de costura.
  *  Note que apenas o ponteiro de pai do nó raiz é nulo.
- * 
+ *
  *  Estrutura de um Nó:
  *
  *  |+++++++++++++++++++++++++++++++++++++++|
@@ -17,10 +17,10 @@ package com.edb2;
  *  |+++++++++++++++++++++++++++++++++++++++|
  *  Onde:
  *      fEsq = enderreço do filho da esquerda
- *      cE   = booleano que indica se o filho da esquerda é uma costura ou não 
+ *      cE   = booleano que indica se o filho da esquerda é uma costura ou não
  *             (se for de costura, o endereço do filho da esquerda é o endereço do antecessor)
  *      fDir = endereço do filho da direita
- *      cD   = booleano que indica se o filho da direita é uma costura ou não 
+ *      cD   = booleano que indica se o filho da direita é uma costura ou não
  *             (se for de costura, o endereço do filho da direita é o endereço do sucessor)
  *      PAI  = endereço do pai do nó
  *      VALOR= valor do nó (inteiro)
@@ -39,7 +39,7 @@ package com.edb2;
  *             |                  |   +------------------------------+   +------------------------+     |                |
  *             |                  V   |                                                           |     V                |
  *             |  |+++++++++++++++++++++++++++++++++++++++|                   |+++++++++++++++++++++++++++++++++++++++|  |
- *             |  |END:_1x02______|_______|_______________|                   |END:_1x03______|__PAI__|_______________|  |  
+ *             |  |END:_1x02______|_______|_______________|                   |END:_1x03______|__PAI__|_______________|  |
  *             |  |           | 1 | VALOR | 1 |   1x01    |                   |    1x01   | 1 | VALOR | 1 |           |  |
  *             |  |+++++++++++++++++++++++++++++++++++++++|                   |+++++++++++++++++++++++++++++++++++++++|  |
  *             |        |                           |                                |                          |        |
@@ -48,7 +48,7 @@ package com.edb2;
  *                     NULO                                                                                    NULO
  *  @author Lucas Nogueira (@fawnbr) e Ianco Oliveira (@ianco-so)
  *  @since 04/11/2022
-*/                                                                                                   
+*/
 public class ArvoreBinariadeBusca {
     private No raiz;
     private Integer tamanho;
@@ -58,81 +58,11 @@ public class ArvoreBinariadeBusca {
         this.raiz = null;
         this.tamanho = 0;
         this.altura = 0;
-        valores = mergeSort(valores);
-        System.out.println(valores);
-        criarArvore(valores, 0, valores.length-1);
-    }
-    /**
-     * Cria uma arvore binaria de busca com os valores da lista já ordenados
-     * Insere os valores da lista de forma recursiva
-     * @param valores
-     * @param i
-     * @param j
-     */
-    private void criarArvore(Integer valores[], int i, int j) {
-        if (i <= j) {
-            int meio = (i + j) / 2;
-            inserir(valores[meio]);
-            criarArvore(valores, i, meio - 1);
-            criarArvore(valores, meio + 1, j);
+        for (int i = 0; i < valores.length; i++) {
+            this.inserir(valores[i]);
         }
     }
-    /**
-     * Ordena um array de Inteiros usando o algoritmo de ordenação MergeSort
-     * @param um array de inteiros
-     * @return um array de inteiros ordenado
-     */
-    private static Integer[] mergeSort(Integer[] valores) {
-        if (valores.length <= 1) {
-            return valores;
-        }
-        int meio = valores.length / 2;
-        Integer[] esquerda = new Integer[meio];
-        Integer[] direita = new Integer[valores.length - meio];
-        for (int i = 0; i < meio; i++) {
-            esquerda[i] = valores[i];
-        }
-        for (int i = meio; i < valores.length; i++) {
-            direita[i - meio] = valores[i];
-        }
-        esquerda = mergeSort(esquerda);
-        direita = mergeSort(direita);
-        Integer[] resultado = merge(esquerda, direita);
-        return resultado;
-    }
-    /**
-     * Mescla dois arrays de inteiros em um só
-     * @param esquerda
-     * @param direita
-     * @return um array de inteiros ordenado
-     */
-    private static Integer[] merge(Integer[] esquerda, Integer[] direita) {
-        Integer[] resultado = new Integer[esquerda.length + direita.length];
-        int i = 0;
-        int j = 0;
-        int k = 0;
-        while (i < esquerda.length && j < direita.length) {
-            if (esquerda[i] <= direita[j]) {
-                resultado[k] = esquerda[i];
-                i++;
-            } else {
-                resultado[k] = direita[j];
-                j++;
-            }
-            k++;
-        }
-        while (i < esquerda.length) {
-            resultado[k] = esquerda[i];
-            i++;
-            k++;
-        }
-        while (j < direita.length) {
-            resultado[k] = direita[j];
-            j++;
-            k++;
-        }
-        return resultado;
-    }
+
     /**
      * Retorna o tamanho da arvore, ou seja, a quantidade de nós.
      * @return tamanho da arvore
@@ -221,11 +151,11 @@ public class ArvoreBinariadeBusca {
                 //O seu antecessor será o antecessor do seu pai.
                 novoNo.setCosturaEsquerda(true);
                 novoNo.setFilhoEsquerda(novoNo.getPai().getFilhoEsquerda());
-                
+
                 //Agora nó da esquerda do pai não é mais uma costura, ele aponta para o novo nó.
                 no.setFilhoEsquerda(novoNo);
                 no.setCosturaEsquerda(false);
-            
+
                 this.tamanho++;
                 return true;
             }
@@ -269,7 +199,7 @@ public class ArvoreBinariadeBusca {
                 no.getPai().setCosturaEsquerda(true);
                 //O antecessor do pai passa a ser o antecessor do nó a ser removido
                 no.getPai().setFilhoEsquerda(no.getFilhoEsquerda());
-                
+
             } else {
                 no.getPai().setCosturaDireita(true);
                 //O sucessor do pai passa a ser o sucessor do nó a ser removido
@@ -278,7 +208,7 @@ public class ArvoreBinariadeBusca {
             this.tamanho--;
             return true;
         } else if(no.isCosturaEsquerda()) { //Tem apenas o filho da direita
-            if (no.getFilhoDireita().isCosturaEsquerda()) { 
+            if (no.getFilhoDireita().isCosturaEsquerda()) {
                 //Se o filho tem nó de costura na esquerda este aponta para o antecessor, nesse caso o pai.
                 //Como o pai será removido, então o antecessor do filho passa a ser o antecessor do pai.
                 //E ele tem nó de costura na esquerda.
@@ -327,7 +257,7 @@ public class ArvoreBinariadeBusca {
                     sucessor.getPai().setCosturaEsquerda(true);
                     //O antecessor do pai passa a ser o antecessor do nó a ser removido
                     sucessor.getPai().setFilhoEsquerda(sucessor.getFilhoEsquerda());
-                    
+
                 } else {
                     sucessor.getPai().setCosturaDireita(true);
                     //O sucessor do pai passa a ser o sucessor do nó a ser removido
@@ -336,7 +266,7 @@ public class ArvoreBinariadeBusca {
                 this.tamanho--;
                 return true;
             } else {
-                if (sucessor.getFilhoDireita().isCosturaEsquerda()) { 
+                if (sucessor.getFilhoDireita().isCosturaEsquerda()) {
                     //Se o filho tem nó de costura na esquerda este aponta para o antecessor, nesse caso o pai.
                     //Como o pai será removido, então o antecessor do filho passa a ser o antecessor do pai.
                     //E ele tem nó de costura na esquerda.
@@ -399,10 +329,10 @@ public class ArvoreBinariadeBusca {
      *             +----13----+       +----41----+
      *             |          |       |          |
      *             V  	      V       V	         V
-     *             5          20      36         60     
+     *             5          20      36         60
      * A impressão 1 será da seguinte forma: (Diagrama de Barras)
      *  32------------------
-     *      13-------------- 
+     *      13--------------
      *          5-----------
      *          20----------
      *      41--------------
@@ -421,7 +351,7 @@ public class ArvoreBinariadeBusca {
     }
     private void imprimirDiagramaBarras(No no, int n) {
         //Percorrer a árvore em pré-ordem e imprimir os nós.
-        if (no != null) { 
+        if (no != null) {
             for (int i = 0; i < n; i++) {
                 System.out.print("    ");
             }
@@ -510,7 +440,7 @@ public class ArvoreBinariadeBusca {
      * Se o valor não estiver na árvore, retorna -1.
      * O algoritmo é baseado no percurso em ordem simétrica, porém, ao invés de
      * imprimir o valor, incrementa uma variável que representa a posição.
-     * 
+     *
      * @param x o valor a ser pesquisado.
      * @return a posição em que o valor x se encontra na árvore.
      */
@@ -559,7 +489,7 @@ public class ArvoreBinariadeBusca {
             return null;
         }
         if (this.getTamanho() % 2 == 0) {
-            return (this.enesimoElemento(this.getTamanho() / 2) + this.enesimoElemento(this.getTamanho() / 2 + 1)) / 2.0;
+            return (double) Math.min(this.enesimoElemento(this.getTamanho() / 2), this.enesimoElemento(this.getTamanho() / 2 + 1));
         }
         return this.enesimoElemento(this.getTamanho() / 2 + 1) / 1.0; //o /1.0 é só para converter o resultado para double
     }
@@ -599,7 +529,7 @@ public class ArvoreBinariadeBusca {
     /**
      * Verifica se a árvore é cheia ou não.
      * Uma árvore é cheia se todos os nós internos possuem dois filhos e todos os nós folhas estão no mesmo nível.
-     * Como sabemos a altura h da árvore, podemos verificar se a árvore é cheia verificando se o número de nós da 
+     * Como sabemos a altura h da árvore, podemos verificar se a árvore é cheia verificando se o número de nós da
      * arvore é a soma da P.G. finita 2^0 + 2^1 + 2^2 + ... + 2^h.
      * @return true se a árvore for cheia, false caso contrário.
      */
